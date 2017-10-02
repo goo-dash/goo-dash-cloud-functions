@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "goodash-8856b"
+    "default": "goodash-8856b",
+    "staging": "goodash-8856b"
   }
 }
