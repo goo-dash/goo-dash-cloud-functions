@@ -108,8 +108,8 @@ app.get('/links/', (req, res) => {
 
 // POST /api/links/check/{url}
 app.post('/links/check/:url', (req, res) => {
-  const url = req.params.url;
-  const sluggedUrl = slug(url).toLocaleLowerCase();
+  let url = req.params.url;
+  let sluggedUrl = slug(url).toLocaleLowerCase();
   admin.database().ref('/links').once('value', function(links) {
     let data = links.val();
     let response = {
