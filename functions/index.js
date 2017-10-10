@@ -93,6 +93,30 @@ app.get('/links/', (req, res) => {
   });
 });
 
+// POST /api/links/check/{url}
+app.post('/links/check/:url', (req, res) => {
+  const url = req.params.url;
+
+  admin.database().ref('/links').once('value', function(links) {
+    let data = links.val();
+    let response = {
+      msg : `Link with url ${url} does not exit, yay, we are about to add a new link`
+    };
+    Object.keys(data).forEach(key => {
+      let temp = data[key];
+      if( url == temp.slug ) {
+        res.statusCode = 409;
+        response = {
+          msg : `Link url url ${url} already exits`
+        };
+      }
+    });
+    res.set(responseHeaders);
+    res.send(JSON.stringify(response));
+  });
+});
+
+
 // POST /api/links/
 app.post('/links', (req, res) => {
   try {
