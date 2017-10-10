@@ -38,6 +38,17 @@ const authenticate = (req, res, next) => {
   });
 };
 
+function buildStructuredData(linkData){
+  return {
+    "@context": "http://schema.org/",
+    "@type": "Website",
+    "url": linkData.url,
+    "name": linkData.name,
+    "image": linkData.imageUrl,
+    "description": linkData.description
+  };
+};
+
 //app.use(authenticate);
 app.use(cors);
 
@@ -49,6 +60,7 @@ app.get('/links/:linkId', (req, res) => {
     const data = link.val();
     let response = '';
     if (data) {
+      data['structuredData'] = buildStructuredData(data);
       res.statusCode = 200;
       response = data;
     }
@@ -72,7 +84,8 @@ app.get('/links/', (req, res) => {
     let linksArray = [];
     Object.keys(data).forEach(key => {
       let temp = data[key];
-      temp.id = key;
+      temp['id'] = key;
+      temp['structuredData'] = buildStructuredData(temp);
 
       delete temp.slug;
 

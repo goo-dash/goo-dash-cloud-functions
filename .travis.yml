@@ -14,7 +14,7 @@ script:
   - npm install
 
 after_success:
-  - firebase deploy --only functions --token $TOKEN --project $PROJECT_ID
+  "firebase deploy --only functions --token $TOKEN --project $PROJECT_ID"
 
 notifications:
   email:
