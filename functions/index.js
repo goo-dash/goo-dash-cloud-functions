@@ -12,12 +12,12 @@ const print = console.log.bind(console, '>> ')
 const responseHeaders = {
   'Content-Type': 'application/json', 
   'Expires': new Date(Date.now() + 345600000).toUTCString(), 
-  'Expires': 'must-revalidate', 
-  'Expires': 'no-cache', 
-  'Expires': 'public', 
-  'Expires': 'proxy-revalidate', 
-  'Expires': 'max-age=7200', 
-  'Expires': 's-maxage=7200', 
+  'Cache-Control': 'must-revalidate', 
+  'Cache-Control': 'no-cache', 
+  'Cache-Control': 'public', 
+  'Cache-Control': 'proxy-revalidate', 
+  'Cache-Control': 'max-age=7200', 
+  'Cache-Control': 's-maxage=7200', 
 };
 
 // Express middleware that validates Firebase ID Tokens passed in the Authorization HTTP header.
