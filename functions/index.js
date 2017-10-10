@@ -106,9 +106,10 @@ app.get('/links/', (req, res) => {
   });
 });
 
-// POST /api/links/check/{url}
-app.post('/links/check/:url', (req, res) => {
-  let url = req.params.url;
+// POST /api/links/check
+app.post('/links/check', (req, res) => {
+  let payload = req.body;
+  let url = payload.url;
   let sluggedUrl = slug(url).toLocaleLowerCase();
   admin.database().ref('/links').once('value', function(links) {
     let data = links.val();
