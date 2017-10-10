@@ -8,6 +8,18 @@ const slug = require('slug')
 const cors = require('cors')({origin: '*'});
 const app = express();
 const print = console.log.bind(console, '>> ')
+
+const responseHeaders = {
+  'Content-Type': 'application/json', 
+  'Expires': new Date(Date.now() + 345600000).toUTCString(), 
+  'Expires': 'must-revalidate', 
+  'Expires': 'no-cache', 
+  'Expires': 'public', 
+  'Expires': 'proxy-revalidate', 
+  'Expires': 'max-age=7200', 
+  'Expires': 's-maxage=7200', 
+};
+
 // Express middleware that validates Firebase ID Tokens passed in the Authorization HTTP header.
 // The Firebase ID token needs to be passed as a Bearer token in the Authorization HTTP header like this:
 // `Authorization: Bearer <Firebase ID Token>`.
@@ -47,7 +59,7 @@ app.get('/links/:linkId', (req, res) => {
       }
     }
 
-    res.set('Content-Type', "application/json");
+    res.set(responseHeaders);
     res.send(JSON.stringify(response));
   });
 });
@@ -76,7 +88,7 @@ app.get('/links/', (req, res) => {
       return 0;
     });
 
-    res.set('Content-Type', "application/json");
+    res.set(responseHeaders);
     res.send(JSON.stringify(linksArray));
   });
 });
@@ -93,7 +105,7 @@ app.post('/links', (req, res) => {
           message : `A link with URL: \'${newLink.url}\' already exists.`
         }
         res.statusCode = 400;
-        res.set('Content-Type', "application/json");
+        res.set(responseHeaders);
         res.send(JSON.stringify(msg));
       }
       else {
@@ -106,7 +118,7 @@ app.post('/links', (req, res) => {
         admin.database().ref(`/links/`).push(newLink);
         
         res.statusCode = 201;
-        res.set('Content-Type', "application/json");
+        res.set(responseHeaders);
         res.send(JSON.stringify(newLink));
       }
     });
@@ -114,7 +126,7 @@ app.post('/links', (req, res) => {
   catch(error) {
     print(error);
     res.statusCode = 500;
-    res.set('Content-Type', "application/json");
+    res.set(responseHeaders);
     res.send(JSON.stringify(error));
   }
 });
@@ -132,13 +144,13 @@ app.put('/links/:linkId', (req, res) => {
 
     admin.database().ref(`/links/${linkId}`).set(updatedLink);
 
-    res.set('Content-Type', "application/json");
+    res.set(responseHeaders);
     res.send(JSON.stringify(updatedLink));
   }
   catch(error) {
     print(error);
     res.statusCode = 500;
-    res.set('Content-Type', "application/json");
+    res.set(responseHeaders);
     res.send(JSON.stringify(error));
   }
 });
@@ -153,14 +165,14 @@ app.delete('/links/:linkId', (req, res) => {
       let msg = {
         message: `Link with ID ${linkId} has been deleted.`
       }
-      res.set('Content-Type', "application/json");
+      res.set(responseHeaders);
       res.send(JSON.stringify(msg));
     });
   }
   catch(error) {
     print(error);
     res.statusCode = 500;
-    res.set('Content-Type', "application/json");
+    res.set(responseHeaders);
     res.send(JSON.stringify(error));
   }
 });
