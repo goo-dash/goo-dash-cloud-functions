@@ -259,6 +259,31 @@ app.delete('/links/:linkId', (req, res) => {
 // with value `Bearer <Firebase ID Token>`.
 exports.api = functions.https.onRequest(app);
 
+// Listen any events happening on the /links
+exports.linkEvents = functions.database.ref('/links/{linkID}')
+.onWrite(event => {
+  print(event.params);
+  print(event);
+
+  // event.params.linkID, event
+  /**
+   * link = get the link from the db
+   * 
+   * image = null
+   * check if image is a link or base64
+   * 
+   * if base64
+   *  image = convert it back to image
+   * 
+   * else if link
+   *  image = get the actual image, 
+   * 
+   * compImage = compressImage(image)
+   * 
+   * link set image as base64
+   */
+});
+
 
 /**
  * name
