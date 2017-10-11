@@ -12,6 +12,7 @@ const print = console.log.bind(console, '>> ')
 const STATUSES = {
   approved: 'approved',
   pending: 'pending',
+  removed: 'removed',
   default: ''
 }
 
@@ -59,7 +60,8 @@ const checkQueary = (req, res, next) => {
   if( req.query.status ) {
     let status = req.query.status;
     if (status != STATUSES.approved &&
-        status != STATUSES.pending) {
+        status != STATUSES.pending &&
+        status != STATUSES.removed) {
         // the status is not supported, return
         let response = {
           message: `Queary status ${status} is not supported`
