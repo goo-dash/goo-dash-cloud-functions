@@ -44,7 +44,7 @@ const authenticate = (req, res, next) => {
   });
 };
 
-function buildStructuredData(linkData){
+const buildStructuredData = (linkData) => {
   return {
     "@context": "http://schema.org/",
     "@type": "Website",
@@ -64,14 +64,21 @@ const checkQueary = (req, res, next) => {
         let response = {
           message: `Queary status ${status} is not supported`
         }
-
         res.set(responseHeaders);
         res.status(400).send(JSON.stringify(response));
         return;
     }
   }
   next();
-}
+};
+
+const compare = (a, b) => {
+  if (a.name < b.name)
+    return -1;
+  if (a.name > b.name)
+    return 1;
+  return 0;
+};
 
 //app.use(authenticate);
 app.use(cors);
@@ -130,13 +137,7 @@ app.get('/links/', checkQueary, (req, res) => {
     });
 
     // sorting the list
-    response.sort(function compare(a,b) {
-      if (a.name < b.name)
-        return -1;
-      if (a.name > b.name)
-        return 1;
-      return 0;
-    });
+    response.sort(compare);
 
     res.set(responseHeaders);
     res.send(JSON.stringify(response));
