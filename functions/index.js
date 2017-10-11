@@ -9,6 +9,12 @@ const cors = require('cors')({origin: '*'});
 const app = express();
 const print = console.log.bind(console, '>> ')
 
+const STATUSES = {
+  approved: 'approved',
+  pending: 'pending',
+  default: ''
+}
+
 const responseHeaders = {
   'Content-Type': 'application/json', 
   'Expires': new Date(Date.now() + 345600000).toUTCString(), 
@@ -49,6 +55,24 @@ function buildStructuredData(linkData){
   };
 };
 
+const checkQueary = (req, res, next) => {
+  if( req.query.status ) {
+    let status = req.query.status;
+    if (status != STATUSES.approved &&
+        status != STATUSES.pending) {
+        // the status is not supported, return
+        let response = {
+          message: `Queary status ${status} is not supported`
+        }
+
+        res.set(responseHeaders);
+        res.status(400).send(JSON.stringify(response));
+        return;
+    }
+  }
+  next();
+}
+
 //app.use(authenticate);
 app.use(cors);
 
@@ -77,23 +101,36 @@ app.get('/links/:linkId', (req, res) => {
 });
 
 // GET /api/links/
-app.get('/links/', (req, res) => {
+app.get('/links/', checkQueary, (req, res) => {
+  let status = '';
+  let filter = false;
+  if( req.query.status ) {
+    status = req.query.status;
+    filter = true;
+  }
+  
   admin.database().ref('/links').once('value', function(links) {
     let data = links.val();
 
-    let linksArray = [];
+    let response = [];
     Object.keys(data).forEach(key => {
       let temp = data[key];
       temp['id'] = key;
       temp['structuredData'] = buildStructuredData(temp);
 
       delete temp.slug;
-
-      linksArray.push(temp);
+      if ( filter ) {
+        if ( status == temp.status) {
+          response.push(temp);
+        }
+      }
+      else {
+        response.push(temp);
+      }
     });
 
     // sorting the list
-    linksArray.sort(function compare(a,b) {
+    response.sort(function compare(a,b) {
       if (a.name < b.name)
         return -1;
       if (a.name > b.name)
@@ -102,7 +139,7 @@ app.get('/links/', (req, res) => {
     });
 
     res.set(responseHeaders);
-    res.send(JSON.stringify(linksArray));
+    res.send(JSON.stringify(response));
   });
 });
 
