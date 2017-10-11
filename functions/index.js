@@ -168,7 +168,6 @@ app.post('/links/check', (req, res) => {
   });
 });
 
-
 // POST /api/links/
 app.post('/links', (req, res) => {
   try {
@@ -253,10 +252,6 @@ app.delete('/links/:linkId', (req, res) => {
   }
 });
 
-
-// This HTTPS endpoint can only be accessed by your Firebase Users.
-// Requests need to be authorized by providing an `Authorization` HTTP header
-// with value `Bearer <Firebase ID Token>`.
 exports.api = functions.https.onRequest(app);
 
 // Listen any events happening on the /links
@@ -283,13 +278,3 @@ exports.linkEvents = functions.database.ref('/links/{linkID}')
    * link set image as base64
    */
 });
-
-
-/**
- * name
- * description
- * url
- * imageUrl
- * status
- * timeStamp
- */
