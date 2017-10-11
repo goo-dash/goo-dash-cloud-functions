@@ -189,7 +189,7 @@ app.post('/links', (req, res) => {
         
         newLink.slug = slg;
         newLink.createdAt = time.toUTCString();
-        newLink.status = "pendingApproval";
+        newLink.status = STATUSES.pending;
     
         admin.database().ref(`/links/`).push(newLink);
         
